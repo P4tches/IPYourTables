@@ -21,18 +21,18 @@ echo "port1:"$port1
 if [ $io = "i" ]; then
 	if [[ "$port" == *"-"* ]]; then
 		for((i=$port1; i<=$port2; i++)); do
-			echo $protocol":"$i":in"
+			echo $protocol" on port "$i" inbound"
 		done
 	else
-		echo $protocol":"$port":in"
+		echo $protocol" on port "$port" inbound"
 	fi
 elif [ $io = "o" ]; then
 	if [[ "$port" == *"-"* ]]; then
 		for((i=$port1; i<=$port2; i++)); do
-			echo $protocol":"$i":out"
+			echo $protocol" on port "$i" outbound"
 		done
 	else
-		echo $protocol":"$port":out"
+		echo $protocol" on port "$port" outbound"
 	fi
 else
 echo "You fucked up"
