@@ -1,44 +1,19 @@
 #!/bin/bash
+
 while true; do
-read input
-ut=$(echo $input | cut -d ':' -f 1)
-port=$(echo $input | cut -d ':' -f 2)
-io=$(echo $input | cut -d ':' -f 3)
-#echo "yes"
-#if[ $port>='1' || port<='65565']
-protocol=$ut
-if [ $ut = "t" ]; then
-	protocol="tcp"
-elif [ $ut = "u" ]; then
-	protocol="udp"
-else
-echo "Try Again."
-fi
-s=' '
-port1=$(echo $port | cut -d '-' -f 1)
-port2=$(echo $port | cut -d '-' -f 2)
-echo "port1:"$port1
-if [ $io = "i" ]; then
-	if [[ "$port" == *"-"* ]]; then
-		for((i=$port1; i<=$port2; i++)); do
-			echo $protocol" on port "$i" inbound"
-			iptables -A INPUT -p $protocol --dport $i -j ACCEPT
-		done
-	else
-		echo $protocol" on port "$port" inbound"
-		iptables -A INPUT -p $protocol --dport $port -j ACCEPT
+	read input
+	input=${input//u/udp}; input=${input//t/tcp}
+	input=${input//i/INPUT}; input=${input//o/OUTPUT}
+	I=($input)
+	PT="dport"
+	if [ "${I[2]}" == "OUTPUT" ]; then
+		PT="sport"
 	fi
-elif [ $io = "o" ]; then
-	if [[ "$port" == *"-"* ]]; then
-		for((i=$port1; i<=$port2; i++)); do
-			echo $protocol" on port "$i" outbound"
-			iptables -A OUTPUT -p $protocol --sport $i  -j ACCEPT
-		done
-	else
-		echo $protocol" on port "$port" outbound"
-		iptables -A OUTPUT -p $protocol --sport $port -j ACCEPT
+	P=(${I[1]//-/ })
+	if [ "${P[1]}" == "" ]; then
+		P[1]=${P[0]}
 	fi
-else
-echo "You fucked up"
-fi
+	for i in $(seq ${P[0]} ${P[1]}); do
+		iptables -A ${I[2]} -p ${I[0]} --${PT} ${i} -j ACCEPT
+	done
 done
