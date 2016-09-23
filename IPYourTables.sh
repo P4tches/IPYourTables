@@ -22,17 +22,21 @@ if [ $io = "i" ]; then
 	if [[ "$port" == *"-"* ]]; then
 		for((i=$port1; i<=$port2; i++)); do
 			echo $protocol" on port "$i" inbound"
+			iptables -A INPUT -p $protocol --dport $i -j ACCEPT
 		done
 	else
 		echo $protocol" on port "$port" inbound"
+		iptables -A INPUT -p $protocol --dport $port -j ACCEPT
 	fi
 elif [ $io = "o" ]; then
 	if [[ "$port" == *"-"* ]]; then
 		for((i=$port1; i<=$port2; i++)); do
 			echo $protocol" on port "$i" outbound"
+			iptables -A OUTPUT -p $protocol --sport $i  -j ACCEPT
 		done
 	else
 		echo $protocol" on port "$port" outbound"
+		iptables -A OUTPUT -p $protocol --sport $port -j ACCEPT
 	fi
 else
 echo "You fucked up"
