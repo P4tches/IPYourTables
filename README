@@ -1,2 +1,0 @@
-Usage: ./IPYourTables
-Syntax: t:80:i (tcp port 80 incoming), u:53:i (udp port 53 incoming), t:5900-5910:i (tcp ports 5900 thru 5910 incoming)
